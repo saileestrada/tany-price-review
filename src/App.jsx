@@ -99,16 +99,18 @@ export default function App() {
               <th className="col-num">CIF EA</th>
               <th className="col-num">Tany EA $</th>
               <th className="col-num">Tany EA Margin</th>
+              <th className="col-num">Current SRP</th>
+              <th className="col-num">Current SRP Margin</th>
               <th className="col-input">New Tany EA $</th>
               <th className="col-num">New Margin</th>
               <th className="col-input">Suggested SRP</th>
-              <th className="col-num">SRP Margin</th>
+              <th className="col-num">New SRP Margin</th>
               <th className="col-action">Change price?</th>
             </tr>
           </thead>
           <tbody>
             {rows.length === 0 && (
-              <tr><td colSpan={11} className="empty">
+              <tr><td colSpan={13} className="empty">
                 {tab === 'pending' ? 'All items reviewed.' : 'No items marked as no change yet.'}
               </td></tr>
             )}
@@ -123,10 +125,16 @@ export default function App() {
                   <td className="cell-id">{r.id}</td>
                   <td className="cell-name" title={r.id + ' — ' + r.name}>{r.name}</td>
                   <td className="col-num"><span className={incClass(r.inc)}>{incIcon(r.inc)} {pct(r.inc)}</span></td>
-                  <td className="col-num">{r.cifEA > 0 ? dollars(r.cifEA) : '—'}</td>
-                  <td className="col-num">{r.tanyEA > 0 ? dollars(r.tanyEA) : '—'}</td>
+                  <td className="col-num">{dollars(r.cifEA)}</td>
+                  <td className="col-num">{dollars(r.tanyEA)}</td>
                   <td className="col-num">
-                    {r.cifEA > 0 ? <span className={marginClass(r.tanyMargin)}>{marginIcon(r.tanyMargin)} {pct(r.tanyMargin)}</span> : '—'}
+                    <span className={marginClass(r.tanyMargin)}>{marginIcon(r.tanyMargin)} {pct(r.tanyMargin)}</span>
+                  </td>
+                  <td className="col-num">{r.srp > 0 ? dollars(r.srp) : '—'}</td>
+                  <td className="col-num">
+                    {r.srp > 0
+                      ? <span className={marginClass(r.srpMargin)}>{marginIcon(r.srpMargin)} {pct(r.srpMargin)}</span>
+                      : '—'}
                   </td>
                   <td className="col-input">
                     <input type="number" step="0.01" min="0" placeholder="0.00"
