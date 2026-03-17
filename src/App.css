@@ -56,3 +56,12 @@ select:focus { outline: none; border-color: #1a1a1a; }
   .app { padding: 1rem; }
   .col-name { max-width: 160px; }
 }
+
+.table-wrap { position: relative; }
+table { border-collapse: separate; border-spacing: 0; }
+th { position: sticky; top: 0; z-index: 3; }
+td.cell-id, th.col-id { position: sticky; left: 0; z-index: 2; background: #fff; }
+th.col-id { z-index: 4; background: #fafaf8; }
+td.cell-name, th.col-name { position: sticky; left: 100px; z-index: 2; background: #fff; box-shadow: 2px 0 4px rgba(0,0,0,0.06); }
+th.col-name { z-index: 4; background: #fafaf8; box-shadow: 2px 0 4px rgba(0,0,0,0.06); }
+tr:hover td.cell-id, tr:hover td.cell-name { background: #fafaf8; }
