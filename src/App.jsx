@@ -101,11 +101,11 @@ export default function App() {
               <th className="col-num">Tany EA Margin</th>
               <th className="col-num">Current SRP</th>
               <th className="col-num">Current SRP Margin</th>
+              <th className="col-action">Change price?</th>
               <th className="col-input">New Tany EA $</th>
               <th className="col-num">New Margin</th>
               <th className="col-input">Suggested SRP</th>
               <th className="col-num">New SRP Margin</th>
-              <th className="col-action">Change price?</th>
             </tr>
           </thead>
           <tbody>
@@ -136,6 +136,13 @@ export default function App() {
                       ? <span className={marginClass(r.srpMargin)}>{marginIcon(r.srpMargin)} {pct(r.srpMargin)}</span>
                       : '—'}
                   </td>
+                  <td className="col-action">
+                    <select value={d.decision || 'pending'} onChange={e => updateDecision(r.id, 'decision', e.target.value)}>
+                      <option value="pending">Pending</option>
+                      <option value="yes">Yes — change</option>
+                      <option value="no">No — keep</option>
+                    </select>
+                  </td>
                   <td className="col-input">
                     <input type="number" step="0.01" min="0" placeholder="0.00"
                       value={d.newPrice || ''} onChange={e => updateDecision(r.id, 'newPrice', e.target.value)} />
@@ -149,13 +156,6 @@ export default function App() {
                   </td>
                   <td className="col-num">
                     {srpMargin !== null ? <span className={marginClass(srpMargin)}>{marginIcon(srpMargin)} {pct(srpMargin)}</span> : '—'}
-                  </td>
-                  <td className="col-action">
-                    <select value={d.decision || 'pending'} onChange={e => updateDecision(r.id, 'decision', e.target.value)}>
-                      <option value="pending">Pending</option>
-                      <option value="yes">Yes — change</option>
-                      <option value="no">No — keep</option>
-                    </select>
                   </td>
                 </tr>
               );
