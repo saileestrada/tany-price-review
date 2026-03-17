@@ -41,7 +41,7 @@ tr:hover td { background: #fafaf8; }
 .col-action { width: 120px; }
 
 .cell-id { font-size: 11px; color: #999; font-family: monospace; }
-.cell-name { font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 260px; }
+.cell-name { font-size: 12px; white-space: normal; word-break: break-word; min-width: 200px; max-width: 260px; }
 
 input[type=number] { width: 76px; padding: 5px 7px; font-size: 12px; border: 1px solid #ddd; border-radius: 5px; background: #fff; color: #1a1a1a; text-align: right; font-family: inherit; }
 input[type=number]:focus { outline: none; border-color: #1a1a1a; }
