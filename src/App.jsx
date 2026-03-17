@@ -96,7 +96,7 @@ export default function App() {
               <th className="col-id">Item No.</th>
               <th className="col-name">Product</th>
               <th className="col-num">Inc %</th>
-              <th className="col-num">CIF EA</th>
+              <th className="col-input">CIF EA</th>
               <th className="col-num">Tany EA $</th>
               <th className="col-num">Tany EA Margin</th>
               <th className="col-num">Current SRP</th>
@@ -116,19 +116,25 @@ export default function App() {
             )}
             {rows.map(r => {
               const d = decisions[r.id] || {};
+              const cifEA = d.cifEA !== undefined ? parseFloat(d.cifEA) : r.cifEA;
               const newPrice = parseFloat(d.newPrice) || 0;
               const sugSrp = parseFloat(d.sugSrp) || 0;
-              const newMargin = newPrice > 0 && r.cifEA > 0 ? 1 - (r.cifEA / newPrice) : null;
+              const tanyMargin = cifEA > 0 && r.tanyEA > 0 ? 1 - (cifEA / r.tanyEA) : r.tanyMargin;
+              const newMargin = newPrice > 0 && cifEA > 0 ? 1 - (cifEA / newPrice) : null;
               const srpMargin = sugSrp > 0 && newPrice > 0 ? 1 - (newPrice / sugSrp) : null;
               return (
                 <tr key={r.id}>
                   <td className="cell-id">{r.id}</td>
                   <td className="cell-name" title={r.id + ' — ' + r.name}>{r.name}</td>
                   <td className="col-num"><span className={incClass(r.inc)}>{incIcon(r.inc)} {pct(r.inc)}</span></td>
-                  <td className="col-num">{dollars(r.cifEA)}</td>
+                  <td className="col-input">
+                    <input type="number" step="0.01" min="0"
+                      value={d.cifEA !== undefined ? d.cifEA : r.cifEA}
+                      onChange={e => updateDecision(r.id, 'cifEA', e.target.value)} />
+                  </td>
                   <td className="col-num">{dollars(r.tanyEA)}</td>
                   <td className="col-num">
-                    <span className={marginClass(r.tanyMargin)}>{marginIcon(r.tanyMargin)} {pct(r.tanyMargin)}</span>
+                    <span className={marginClass(tanyMargin)}>{marginIcon(tanyMargin)} {pct(tanyMargin)}</span>
                   </td>
                   <td className="col-num">{r.srp > 0 ? dollars(r.srp) : '—'}</td>
                   <td className="col-num">
