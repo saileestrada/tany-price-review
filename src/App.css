@@ -26,7 +26,10 @@ h1 { font-size: 18px; font-weight: 600; color: #1a1a1a; }
 .count { display: inline-flex; align-items: center; justify-content: center; min-width: 20px; height: 18px; padding: 0 5px; border-radius: 9px; font-size: 11px; font-weight: 600; background: #1a1a1a; color: #fff; }
 .count.gray { background: #ccc; color: #555; }
 
-.table-wrap { position: relative; overflow-x: auto; border: 1px solid #e5e5e5; border-radius: 8px; background: #fff; }
+.table-wrap { position: relative; overflow-x: auto; overflow-y: auto; max-height: 75vh; border: 1px solid #e5e5e5; border-radius: 8px; background: #fff; }
+.top-scroll { overflow-x: auto; overflow-y: hidden; border: 1px solid #e5e5e5; border-bottom: none; border-radius: 8px 8px 0 0; margin-bottom: -1px; }
+.top-scroll-inner { height: 1px; }
+.table-wrap.has-top-scroll { border-top-left-radius: 0; border-top-right-radius: 0; }
 table { width: 100%; border-collapse: separate; border-spacing: 0; }
 thead { position: sticky; top: 0; z-index: 3; }
 th { background: #fafaf8; color: #666; font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.03em; padding: 9px 10px; text-align: left; border-bottom: 1px solid #e5e5e5; white-space: nowrap; }
