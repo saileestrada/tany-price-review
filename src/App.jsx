@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { ITEMS } from './data';
 import './App.css';
 
@@ -49,6 +49,25 @@ export default function App() {
   const [tab, setTab] = useState('pending');
   const [decisions, setDecisions] = useState(() => getStateFromUrl());
   const [copied, setCopied] = useState(false);
+  const topScrollRef = useRef(null);
+  const tableWrapRef = useRef(null);
+  const syncing = useRef(false);
+
+  useEffect(() => {
+    const top = topScrollRef.current;
+    const bot = tableWrapRef.current;
+    if (!top || !bot) return;
+    const onTopScroll = () => { if (!syncing.current) { syncing.current = true; bot.scrollLeft = top.scrollLeft; syncing.current = false; } };
+    const onBotScroll = () => { if (!syncing.current) { syncing.current = true; top.scrollLeft = bot.scrollLeft; syncing.current = false; } };
+    top.addEventListener('scroll', onTopScroll);
+    bot.addEventListener('scroll', onBotScroll);
+    const obs = new ResizeObserver(() => {
+      const inner = top.firstElementChild;
+      if (inner) inner.style.width = bot.scrollWidth + 'px';
+    });
+    obs.observe(bot);
+    return () => { top.removeEventListener('scroll', onTopScroll); bot.removeEventListener('scroll', onBotScroll); obs.disconnect(); };
+  }, [tab]);
 
   useEffect(() => { setStateInUrl(decisions); }, [decisions]);
 
@@ -99,7 +118,9 @@ export default function App() {
       </div>
 
       {tab === 'reference' ? (
-        <div className="table-wrap">
+        <>
+        <div className="top-scroll" ref={topScrollRef}><div className="top-scroll-inner" /></div>
+        <div className="table-wrap has-top-scroll" ref={tableWrapRef}>
           <table>
             <thead>
               <tr>
@@ -143,8 +164,11 @@ export default function App() {
             </tbody>
           </table>
         </div>
+        </>
       ) : (
-        <div className="table-wrap">
+        <>
+        <div className="top-scroll" ref={topScrollRef}><div className="top-scroll-inner" /></div>
+        <div className="table-wrap has-top-scroll" ref={tableWrapRef}>
           <table>
             <thead>
               <tr>
@@ -236,6 +260,7 @@ export default function App() {
             </tbody>
           </table>
         </div>
+        </>
       )}
     </div>
   );
