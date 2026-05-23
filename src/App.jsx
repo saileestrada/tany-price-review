@@ -49,6 +49,8 @@ export default function App() {
   const [tab, setTab] = useState('pending');
   const [decisions, setDecisions] = useState(() => getStateFromUrl());
   const [copied, setCopied] = useState(false);
+  const [sortBy, setSortBy] = useState('id');
+  const [sortDir, setSortDir] = useState('asc');
   const topScrollRef = useRef(null);
   const tableWrapRef = useRef(null);
   const syncing = useRef(false);
@@ -84,7 +86,20 @@ export default function App() {
 
   const pending = ITEMS.filter(r => decisions[r.id]?.decision !== 'no');
   const reviewed = ITEMS.filter(r => decisions[r.id]?.decision === 'no');
-  const rows = tab === 'pending' ? pending : tab === 'reviewed' ? reviewed : ITEMS;
+  const baseRows = tab === 'pending' ? pending : tab === 'reviewed' ? reviewed : ITEMS;
+
+  const toggleSort = (col) => {
+    if (sortBy === col) setSortDir(d => d === 'asc' ? 'desc' : 'asc');
+    else { setSortBy(col); setSortDir('asc'); }
+  };
+  const sortIndicator = (col) => sortBy === col ? (sortDir === 'asc' ? ' ▲' : ' ▼') : '';
+
+  const rows = [...baseRows].sort((a, b) => {
+    let cmp = 0;
+    if (sortBy === 'id') cmp = a.id.localeCompare(b.id);
+    else if (sortBy === 'name') cmp = a.name.localeCompare(b.name);
+    return sortDir === 'asc' ? cmp : -cmp;
+  });
 
   return (
     <div className="app">
@@ -124,8 +139,8 @@ export default function App() {
           <table>
             <thead>
               <tr>
-                <th className="col-id">Item No.</th>
-                <th className="col-name">Product</th>
+                <th className="col-id sortable" onClick={() => toggleSort('id')}>Item No.{sortIndicator('id')}</th>
+                <th className="col-name sortable" onClick={() => toggleSort('name')}>Product{sortIndicator('name')}</th>
                 <th className="col-num">Prev Cost</th>
                 <th className="col-num">New Cost</th>
                 <th className="col-num">Diff</th>
@@ -142,7 +157,7 @@ export default function App() {
               </tr>
             </thead>
             <tbody>
-              {ITEMS.map(r => (
+              {rows.map(r => (
                 <tr key={r.id}>
                   <td className="cell-id">{r.id}</td>
                   <td className="cell-name">{r.name}</td>
@@ -172,8 +187,8 @@ export default function App() {
           <table>
             <thead>
               <tr>
-                <th className="col-id">Item No.</th>
-                <th className="col-name">Product</th>
+                <th className="col-id sortable" onClick={() => toggleSort('id')}>Item No.{sortIndicator('id')}</th>
+                <th className="col-name sortable" onClick={() => toggleSort('name')}>Product{sortIndicator('name')}</th>
                 <th className="col-num">Inc %</th>
                 <th className="col-input">CIF EA</th>
                 <th className="col-num">Tany EA $</th>
