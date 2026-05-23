@@ -72,7 +72,7 @@ export default function App() {
       <div className="header">
         <div>
           <h1>Tany Foods — Price Review</h1>
-          <p className="subtitle">Cost increase review · March 2026</p>
+          <p className="subtitle">Cost increase review · May 2026</p>
         </div>
         <button className={`btn-share${copied ? ' copied' : ''}`} onClick={shareLink}>
           {copied ? '✓ Copied!' : 'Share link'}
@@ -114,6 +114,7 @@ export default function App() {
                 <th className="col-num">Tany EA $</th>
                 <th className="col-num">Prev Margin</th>
                 <th className="col-num">Curr Margin</th>
+                <th className="col-num">Actual EA Margin</th>
                 <th className="col-num">Margin Drop</th>
                 <th className="col-num">SRP EA $</th>
                 <th className="col-num">SRP Margin</th>
@@ -133,6 +134,7 @@ export default function App() {
                   <td className="col-num">{dollars(r.tanyEA)}</td>
                   <td className="col-num"><span className={marginClass(r.prevMargin)}>{marginIcon(r.prevMargin)} {pct(r.prevMargin)}</span></td>
                   <td className="col-num"><span className={marginClass(r.tanyMargin)}>{marginIcon(r.tanyMargin)} {pct(r.tanyMargin)}</span></td>
+                  <td className="col-num">{r.actualMargin ? <span className={marginClass(r.actualMargin)}>{marginIcon(r.actualMargin)} {pct(r.actualMargin)}</span> : '—'}</td>
                   <td className="col-num"><span className={dropClass(r.marginDrop)}>{pctSigned(r.marginDrop)}</span></td>
                   <td className="col-num">{r.srp > 0 ? dollars(r.srp) : '—'}</td>
                   <td className="col-num">{r.srp > 0 ? <span className={marginClass(r.srpMargin)}>{marginIcon(r.srpMargin)} {pct(r.srpMargin)}</span> : '—'}</td>
@@ -153,6 +155,7 @@ export default function App() {
                 <th className="col-num">Tany EA $</th>
                 <th className="col-num">Prev Margin</th>
                 <th className="col-num">Tany EA Margin</th>
+                <th className="col-num">Actual EA Margin</th>
                 <th className="col-num">Margin Drop</th>
                 <th className="col-num">Current SRP</th>
                 <th className="col-num">Current SRP Margin</th>
@@ -161,11 +164,13 @@ export default function App() {
                 <th className="col-num">New Margin</th>
                 <th className="col-input">Suggested SRP</th>
                 <th className="col-num">New SRP Margin</th>
+                <th className="col-input">TRT Price</th>
+                <th className="col-comment">Comments</th>
               </tr>
             </thead>
             <tbody>
               {rows.length === 0 && (
-                <tr><td colSpan={15} className="empty">
+                <tr><td colSpan={18} className="empty">
                   {tab === 'pending' ? 'All items reviewed.' : 'No items marked as no change yet.'}
                 </td></tr>
               )}
@@ -190,6 +195,7 @@ export default function App() {
                     <td className="col-num">{dollars(r.tanyEA)}</td>
                     <td className="col-num"><span className={marginClass(r.prevMargin)}>{marginIcon(r.prevMargin)} {pct(r.prevMargin)}</span></td>
                     <td className="col-num"><span className={marginClass(tanyMargin)}>{marginIcon(tanyMargin)} {pct(tanyMargin)}</span></td>
+                    <td className="col-num">{r.actualMargin ? <span className={marginClass(r.actualMargin)}>{marginIcon(r.actualMargin)} {pct(r.actualMargin)}</span> : '—'}</td>
                     <td className="col-num"><span className={dropClass(r.marginDrop)}>{pctSigned(r.marginDrop)}</span></td>
                     <td className="col-num">{r.srp > 0 ? dollars(r.srp) : '—'}</td>
                     <td className="col-num">
@@ -215,6 +221,14 @@ export default function App() {
                     </td>
                     <td className="col-num">
                       {srpMargin !== null ? <span className={marginClass(srpMargin)}>{marginIcon(srpMargin)} {pct(srpMargin)}</span> : '—'}
+                    </td>
+                    <td className="col-input">
+                      <input type="number" step="0.01" min="0" placeholder="0.00"
+                        value={d.trtPrice || ''} onChange={e => updateDecision(r.id, 'trtPrice', e.target.value)} />
+                    </td>
+                    <td className="col-comment">
+                      <input type="text" placeholder="..."
+                        value={d.comment || ''} onChange={e => updateDecision(r.id, 'comment', e.target.value)} />
                     </td>
                   </tr>
                 );
